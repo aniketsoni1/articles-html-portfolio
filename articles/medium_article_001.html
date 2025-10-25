@@ -1,225 +1,31 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta property="article:published_time" content="2025-10-25T01:00:00.000Z" />
-    <title>Mastering Container Workflows with Docker: Building, Sharing, and Scaling Like a Captain</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            margin: 0;
-            background-color: #fdfdfd;
-        }
-        .container {
-            max-width: 720px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-        h1, h2, h3 {
-            font-family: "Georgia", serif;
-            color: #111;
-            line-height: 1.2;
-        }
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 0.25em;
-        }
-        h2 {
-            font-size: 1.8em;
-            margin-top: 1.5em;
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 8px;
-        }
-        h3 {
-            font-size: 1.4em;
-            margin-top: 1.5em;
-            color: #333;
-        }
-        .subtitle {
-            font-style: italic;
-            color: #666;
-            font-size: 1.1em;
-            margin-top: 0;
-        }
-        pre {
-            background-color: #2d2d2d;
-            color: #f8f8f2;
-            padding: 20px;
-            border-radius: 8px;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        code {
-            font-family: "Fira Code", "Courier New", monospace;
-            font-size: 0.95em;
-        }
-        p > code, li > code {
-            background-color: #eef;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.9em;
-        }
-        blockquote {
-            border-left: 3px solid #007acc;
-            padding-left: 20px;
-            margin: 20px 0;
-            font-style: italic;
-            color: #555;
-        }
-        .highlight {
-            background-color: #fff3cd;
-            padding: 15px;
-            border: 1px solid #ffeeba;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        .hr {
-            border: none;
-            border-top: 1px solid #eee;
-            margin: 28px 0;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <title>Your Article Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Keep head minimal. No CSS/JS. -->
 </head>
 <body>
-    <main class="container">
-        <article>
-            <h1>Mastering Container Workflows with Docker: Building, Sharing, and Scaling Like a Captain</h1>
-            <p class="subtitle">A hands-on, production-ready guide to advanced Docker practices that power modern DevOps pipelines.</p>
-            <p class="meta">Author: Aniket Abhishek Soni · Reading time: 10–12 minutes</p>
+<article>
+  <h1>Your Article Title</h1>
+  <p><em>Optional subtitle</em></p>
 
-            <div class="highlight">
-                <p><strong>Start:</strong> If you just want to try this now, copy the <code>Dockerfile</code> below into a new folder with your app, then run:</p>
-                <pre><code class="language-bash"># 1) Build
-docker build -t myapp:dev .
+  <h2>Section</h2>
+  <p>Write paragraphs with plain <strong>HTML</strong>. Avoid custom classes.</p>
 
-# 2) Run locally
-docker run -p 8080:8080 myapp:dev
+  <ul>
+    <li>Bullets are fine</li>
+    <li>Numbered lists too</li>
+  </ul>
 
-# 3) Add Redis & run both via Compose (optional)
-#   - Save the compose.yml from this post in the same folder
-#   - Then bring the stack up
-
-docker compose up --build -d
-
-# 4) Push an immutable tag to Docker Hub
-#    (replace username with your handle)
-docker tag myapp:dev username/myapp:v1.0.0
-docker push username/myapp:v1.0.0
-</code></pre>
-            </div>
-
-            <p>Docker has evolved from a developer convenience into a collaboration framework for teams shipping software at scale. The <em>Docker Captains</em> community champions best practices, shares real-world patterns, and helps developers move from local prototypes to production-grade, repeatable workflows. This guide distills practical techniques I use to help teams build efficiently, share securely, and deploy with confidence.</p>
-
-            <hr class="hr" />
-
-            <h2>Prerequisites</h2>
-            <ul>
-                <li><strong>Docker Desktop / Engine</strong> installed and updated to a recent stable release.</li>
-                <li><strong>Docker Hub account</strong> (or an org) for hosting images and managing permissions.</li>
-                <li><strong>Git</strong> and basic CLI familiarity.</li>
-                <li><strong>Optional:</strong> GitHub Actions or Jenkins for CI/CD automation.</li>
-            </ul>
-
-            <div class="highlight">
-                <p><strong>Captain’s Tip:</strong> Enable <code>BuildKit</code> by default for faster, cache-smart builds and advanced features like secrets and SSH forwarding.</p>
-            </div>
-
-            <hr class="hr" />
-
-            <h2>Step 1: Build Efficient, Secure Images</h2>
-            <p>Keep your images small, deterministic, and secure. Use multi-stage builds, pin dependencies, and ignore unneeded files with <code>.dockerignore</code>.</p>
-
-<pre><code class="language-dockerfile"># Dockerfile
-FROM python:3.12-slim AS build
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-
-FROM python:3.12-slim AS runtime
-ENV PYTHONUNBUFFERED=1 PORT=8080
-WORKDIR /app
-COPY --from=build /app /app
-EXPOSE 8080
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8080"]
+  <pre><code>// Code blocks
+docker build -t app .
+docker run -p 8080:8080 app
 </code></pre>
 
-            <p>Create a <code>.dockerignore</code> file to keep builds clean:</p>
-<pre><code>.git
-__pycache__/
-*.pyc
-.env
-node_modules/
-.vscode/
-</code></pre>
-
-            <hr class="hr" />
-
-            <h2>Step 2: Share and Collaborate via Docker Hub</h2>
-            <p>Use semantic tagging and automated builds to keep releases traceable. Treat your registry like production infrastructure: audited, documented, and permissioned.</p>
-
-<pre><code class="language-bash">docker login
-docker build -t myapp:latest .
-docker tag myapp:latest username/myapp:v1.0.0
-docker push username/myapp:v1.0.0
-</code></pre>
-
-            <blockquote>
-                “As Captains, we promote a ‘documented by default’ approach—every image should be discoverable, reproducible, and secure by design.”
-            </blockquote>
-
-            <hr class="hr" />
-
-            <h2>Step 3: Orchestrate Locally with Docker Compose</h2>
-            <p>Compose makes multi-service development feel like running a single app. Define services, networks, and volumes as code.</p>
-
-<pre><code class="language-yaml">version: "3.9"
-services:
-  web:
-    build: .
-    ports:
-      - "8080:8080"
-  redis:
-    image: redis:7
-    restart: unless-stopped
-</code></pre>
-
-            <hr class="hr" />
-
-            <h2>Step 4: Automate Delivery with GitHub Actions</h2>
-<pre><code class="language-yaml">name: Build & Push Docker Image
-on:
-  push:
-    branches: ["main"]
-
-jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: docker/setup-buildx-action@v3
-      - uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: username/myapp:latest,username/myapp:${{ github.sha }}
-</code></pre>
-
-            <hr class="hr" />
-
-            <h2>Conclusion: Build Once, Ship Everywhere</h2>
-            <p>Docker’s power isn’t just isolated containers—it’s a shared workflow philosophy. By standardizing how we build, tag, scan, and ship, teams reduce friction and accelerate delivery. The practices above form a production-ready baseline you can adopt today and refine over time.</p>
-
-            <p><em>If this guide helped, share it, open a discussion, or contribute a Compose template to your team’s internal toolkit.</em></p>
-        </article>
-    </main>
+  <!-- Use absolute URLs for images -->
+  <!-- <img src="https://your-domain/path/image.png" alt="description"> -->
+</article>
 </body>
 </html>
